@@ -1,11 +1,11 @@
-resource "aws_security_group" "allow_docdb" {
-  name        = "roboshop-${var.ENV}-mongodb-sg"
-  description = "roboshop-${var.ENV}-mongodb-sg"
+resource "aws_security_group" "allow_redis" {
+  name        = "roboshop-${var.ENV}-redis-sg"
+  description = "roboshop-${var.ENV}-redis-sg"
   vpc_id      = data.terraform_remote_state.vpc.outputs.VPC_ID
 
   ingress {
-    from_port        = 27017
-    to_port          = 27017
+    from_port        = 6379
+    to_port          = 6379
     protocol         = "tcp"
     cidr_blocks      = [data.terraform_remote_state.vpc.outputs.VPC_CIDR, data.terraform_remote_state.vpc.outputs.DEFAULT_VPC_CIDR]
   }
@@ -17,6 +17,6 @@ resource "aws_security_group" "allow_docdb" {
   }
   
   tags = {
-    Name = "roboshop-${var.ENV}-mongodb-sg"
+    Name = "roboshop-${var.ENV}-redis-sg"
   }
 }

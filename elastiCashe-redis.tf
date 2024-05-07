@@ -1,34 +1,22 @@
 resource "aws_elasticache_cluster" "redis" {
   cluster_id           = "roboshop-${var.ENV}-redis"
   engine               = "redis"
-  node_type            = "cache.t3.micro"
+  node_type            = "cache.t3.small"
   num_cache_nodes      = 1
-  parameter_group_name = "default.redis3.2"
-  engine_version       = "6.2.x"
+  parameter_group_name = aws_elasticache_parameter_group.redis_pg.name
+  engine_version       = "6.2"
   port                 = 6379
+  security_group_ids   = [aws_security_group.allow_redis.id]
 }
 
-resource "aws_subnet" "foo" {
-  vpc_id            = aws_vpc.foo.id
-  cidr_block        = "10.0.0.0/24"
-  availability_zone = "us-west-2a"
-
-  tags = {
-    Name = "roboshop-${var.ENV}-redis"
-  }
+resource "aws_elasticache_parameter_group" "redis_pg" {
+  name   = "roboshop-${var.ENV}-redis_pg"
+  family = "redis6.x"
 }
 
-resource "aws_elasticache_parameter_group" "redis" {
-  name   = "cache-params"
-  family = "redis2.8"
+# Aws subnet group for group if subnets
 
-  parameter {
-    name  = "activerehashing"
-    value = "yes"
-  }
-
-  parameter {
-    name  = "min-slaves-to-write"
-    value = "2"
-  }
+resource "aws_elasticache_subnet_group" "redis" {
+  name       = "roboshop-${var.ENV}-redis_gd_grp"
+  subnet_ids = data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNET_ID
 }
