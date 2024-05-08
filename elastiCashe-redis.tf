@@ -10,13 +10,13 @@ resource "aws_elasticache_cluster" "redis" {
 }
 
 resource "aws_elasticache_parameter_group" "redis_pg" {
-  name   = "roboshop-${var.ENV}-redis_pg"
+  name   = "roboshop-${var.ENV}-redis-pg"
   family = "redis6.x"
 }
 
 # Aws subnet group for group if subnets
 
 resource "aws_elasticache_subnet_group" "redis" {
-  name       = "roboshop-${var.ENV}-redis"
+  name       = "roboshop-${var.ENV}-redis-subnetgroup"
   subnet_ids = data.terraform_remote_state.vpc.outputs.PRIVATE_SUBNET_ID
 }
