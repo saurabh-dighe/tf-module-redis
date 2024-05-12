@@ -3,5 +3,5 @@ resource "aws_route53_record" "redis" {
   name    = "redis-${var.ENV}"
   type    = "CNAME"
   ttl     = 10
-  records = [aws_elasticache_cluster.redis.0.address]
+  records = [aws_elasticache_cluster.redis.cache_nodes.0.address]
 }
